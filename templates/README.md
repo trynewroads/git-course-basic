@@ -9,10 +9,10 @@ color: #ffffff;
 footer: Git Básico
 header: |
   <div class="logo-start">
-    <img src="img/git-logo-white.png" alt="Logo Git"  class="logo"/>
+    <img src="../../images/git-logo-white.png" alt="Logo Git"  class="logo"/>
   </div>
   <div class="logo-end">
-    <img src="img/logo_white.png" alt="Logo TNR" class="logo" />
+    <img src="../../images/logo_white.png" alt="Logo TNR" class="logo" />
   </div>
 
 style: |
@@ -104,6 +104,46 @@ style: |
 
   code {
     background-color: rgb(255 255 255 / 30%);
+  }
+
+
+  tr {
+    background: transparent!important;
+  }
+
+  .container-center {
+    display: flex;
+    place-content: center;
+  }
+
+  .container-image {
+    display: flex;
+    place-content: center;
+    max-height: 80%;
+  }
+
+  .summary{
+    padding: 1rem;
+    margin: 1rem;
+    border-radius: 25px;
+    background-color: rgb(255 255 255 / 10%);
+  }
+
+  .summary p {
+    font-size: 18px;
+    padding-bottom: 4px;
+  }
+
+  .resolve{
+    padding: 1rem 1rem .5rem 1rem;
+    margin: 1rem;
+    border-radius: 25px;
+    background-color: rgb(255 255 255 / 10%);
+    font-size: 22px;
+  }
+
+  .small {
+    font-size: 14px;
   }
 ---
 
