@@ -170,9 +170,11 @@ style: |
 
 ### Beneficios clave
 
-- Colaboración
-- Trazabilidad
-- Recuperación
+- **Colaboración:** Permite que varias personas trabajen simultáneamente en el mismo proyecto, integrando cambios de manera eficiente y evitando conflictos
+
+- **Trazabilidad:** Registra el historial completo de modificaciones, facilitando el seguimiento de quién hizo cada cambio y cuándo
+
+- **Recuperación:** Posibilita volver a versiones anteriores del proyecto o restaurar archivos eliminados accidentalmente
 
 ---
 
@@ -180,6 +182,8 @@ style: |
 
 - Git: _Distribuido_
 - Subversion (SVN): _Centralizado_
+- Mercurial (hg): _Distribuido_
+- Perforce (Helix Core): _Centralizado y distribuido_
 
 ---
 
