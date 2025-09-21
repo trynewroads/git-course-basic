@@ -9,7 +9,7 @@ color: #ffffff;
 footer: Git Básico
 header: |
   <div class="logo-start">
-    <img src="../../images/git-logo-white.png" alt="Logo Git"  class="logo"/>
+    <img src="../../images/git_logo_white.png" alt="Logo Git"  class="logo"/>
   </div>
   <div class="logo-end">
     <img src="../../images/logo_white.png" alt="Logo TNR" class="logo" />
@@ -115,12 +115,15 @@ style: |
     display: flex;
     place-content: center;
   }
+ 
 
   .container-image {
     display: flex;
     place-content: center;
     max-height: 80%;
   }
+
+  
 
   .summary{
     padding: 1rem;
@@ -183,6 +186,14 @@ cd <directorio>
 git init
 ```
 
+---
+
+<div class=container-image>
+<img src="../../images/git_init.png">
+</div>
+
+---
+
 En ambos casos, Git crea una rama principal por defecto y el directorio `.git` se genera para almacenar toda la información del proyecto.
 
 Para comprobar si tu proyecto tiene un repositorio inicializado, puedes usar el comando:
@@ -190,6 +201,12 @@ Para comprobar si tu proyecto tiene un repositorio inicializado, puedes usar el 
 ```bash
 git status
 ```
+
+---
+
+<div class=container-image>
+<img src="../../images/git_status.png">
+</div>
 
 ---
 
@@ -209,6 +226,8 @@ Luego, revisamos el estado del repositorio con:
 git status
 ```
 
+---
+
 Esto mostrará que el archivo `index.html` ha sido añadido y está en estado **modificado**.
 
 Para obtener una vista más simplificada, puedes usar:
@@ -219,7 +238,202 @@ git status -s
 
 ---
 
+<div class=container-image>
+<img src="../../images/git_touch.png">
+</div>
+
+
+---
+
+
+## Staging
+
+---
+
+
+### Añadir Staging
+
+El área de `staging` es una zona temporal donde preparamos los archivos modificados antes de confirmarlos con un `commit`.
+
+```bash
+git add index.html        # Prepara el archivo index.html
+git add archivo1.js archivo2.js   # Prepara varios archivos
+git add *.js               # Prepara todos los archivos .js
+git add -A                 # Prepara todos los cambios (incluyendo eliminaciones)
+git add .                  # Prepara todos los cambios en el directorio actual
+git add resources/         # Prepara todos los archivos en el directorio resources
+```
+
+---
+
+<div class=container-image>
+<img src="../../images/git_staging.png">
+</div>
+
+---
+
+### Sacar archivos de Staging
+
+Podemos eliminar los ficheros del área de `staging` y devolverlos al estado de modificados con el comando `git reset`.
+
+```bash
+git reset index.html          # Elimina index.html del área de staging
+git reset archivo1.js archivo2.js   # Elimina varios archivos del área de staging
+git reset *.js                # Elimina todos los archivos .js del área de staging
+git reset -A                  # Elimina todos los archivos del área de staging
+git reset .                   # Elimina todos los cambios del directorio actual del área de staging
+git reset resources/          # Elimina todos los archivos del directorio resources del área de staging
+```
+
+---
+
+<div class=container-image>
+<img src="../../images/git_reset.png">
+</div>
+
+
+---
+
+## Commit
+
+---
+
+## ¿Qué es un commit?
+
+Los commits sirven para registrar los cambios que se han producido en el repositorio. Cada commit muestra el estado de todos los archivos del repositorio, el autor, la fecha y otra información útil.
+
+
+---
+
+## ¿Cómo hacer un commit?
+
+Para guardar los ficheros del área de `staging`, se utiliza el comando:
+
+```bash
+git commit   # Este comando creará una referencia al commit
+```
+
+Este comando abrirá el editor para que puedas poner un mensaje de commit. Si quieres añadir el mensaje directamente en el comando, puedes usar la opción `-m`:
+
+```bash
+git commit -m 'new feature'   # Realiza un commit con el mensaje 'new feature'
+```
+
+---
+
+
+<div class=container-image>
+<img src="../../images/git_commit.png">
+</div>
+
+---
+
+## Commit sin staging
+
+También es posible evitar añadir directamente los archivos modificados al área de `staging`. Para realizar esta operación se utiliza el comando:
+
+```bash
+git commit -a   # Realiza un commit de todos los archivos modificados sin necesidad de añadirlos a staging
+```
+
+Este comando realizará un commit directamente de los archivos modificados. Además, se puede añadir la opción `-m` para incluir el mensaje de commit directamente:
+
+```bash
+git commit -am 'new feature'   # Realiza un commit con el mensaje 'new feature' sin pasar por staging
+```
+
+<small>**Nota:** Esto sólo funciona para archivos modificados. Los archivos nuevos o eliminados necesitan ser añadidos a staging primero.</small>
+
+---
+
+<div class=container-image>
+<img src="../../images/git_commit_direct.png">
+</div>
+
+
+---
+
+## HEAD
+
+Cada `commit` se graba con un hash único que puede ser complicado de utilizar como referencia rápida. Para esto existe `HEAD`, que normalmente apunta al último `commit` de la rama activa.
+
+```bash
+# Mostrar la rama a la que apunta HEAD
+git symbolic-ref HEAD
+
+# Mostrar el hash del commit al que apunta HEAD
+git rev-parse HEAD
+```
+
+---
+
+
+<div class=container-image>
+<img src="../../images/git_head.png">
+</div>
+
+
+
+---
+
+## Deshacer Cambios (Commits)
+
+Si necesitamos deshacer el último `commit` porque nos hemos equivocado o faltan archivos, podemos hacerlo de dos maneras:
+
+```bash
+# Mantener los cambios
+git reset --soft HEAD~1
+
+# No mantener los cambios
+git reset --hard HEAD~1
+```
+
+El `HEAD~1` indica que queremos movernos a la versión inmediatamente anterior a la actual.
+
+**Nota:** Esto solo funcionará si los cambios no se han subido al repositorio remoto.
+
+---
+
+<div class=container-image>
+<img src="../../images/git_reset_soft.png">
+</div>
+
+---
+
+<div class=container-image>
+<img src="../../images/git_reset_hard.png">
+</div>
+
+
+---
+
+## Arreglar Commit
+
+Si lo único que necesitamos es corregir el último `commit`:
+
+```bash
+# Editar el mensaje
+git commit --amend -m 'Nuevo mensaje'
+
+# Añadir archivos y modificar el commit
+git add archivo3.js
+git commit --amend -m 'Nuevo mensaje'
+```
+
+El comando `amend` no crea un nuevo `commit`, sino que actualiza el anterior.
+
+---
+
+<div class=container-image>
+<img src="../../images/git_amend.png">
+</div>
+
+
+---
+
 ## Deshacer cambios
+
+---
 
 ### Deshacer un archivo modificado (Usando `git restore`)
 
@@ -232,6 +446,19 @@ git restore '*.js'
 ```
 
 **Nota:** Este comando hará que los cambios se pierdan. Si el archivo no está guardado en un commit previo, Git nos dará un error.
+
+---
+
+<div class=container-image>
+<img src="../../images/git_restore.png">
+</div>
+
+
+---
+
+<div class=container-image>
+<img src="../../images/git_restore_fail.png">
+</div>
 
 ---
 
@@ -258,6 +485,8 @@ touch index2.html
 git clean
 ```
 
+---
+
 Opciones principales de `git clean`:
 
 - `-n`: Muestra qué se eliminaría sin ejecutar la acción.
@@ -272,123 +501,9 @@ git clean -f   # Fuerza la limpieza
 
 ---
 
-## Staging
 
-### Añadir Staging
+<div class=container-image>
+<img src="../../images/git_clean.png">
+</div>
 
-El área de `staging` es una zona temporal donde preparamos los archivos modificados antes de confirmarlos con un `commit`.
 
-```bash
-git add index.html        # Prepara el archivo index.html
-git add archivo1.js archivo2.js   # Prepara varios archivos
-git add *.js               # Prepara todos los archivos .js
-git add -A                 # Prepara todos los cambios (incluyendo eliminaciones)
-git add .                  # Prepara todos los cambios en el directorio actual
-git add resources/         # Prepara todos los archivos en el directorio resources
-```
-
----
-
-### Sacar archivos de Staging
-
-Podemos eliminar los ficheros del área de `staging` y devolverlos al estado de modificados con el comando `git reset`.
-
-```bash
-git reset index.html          # Elimina index.html del área de staging
-git reset archivo1.js archivo2.js   # Elimina varios archivos del área de staging
-git reset *.js                # Elimina todos los archivos .js del área de staging
-git reset -A                  # Elimina todos los archivos del área de staging
-git reset .                   # Elimina todos los cambios del directorio actual del área de staging
-git reset resources/          # Elimina todos los archivos del directorio resources del área de staging
-```
-
----
-
-## ¿Qué es un commit?
-
-Los commits sirven para registrar los cambios que se han producido en el repositorio. Cada commit muestra el estado de todos los archivos del repositorio, el autor, la fecha y otra información útil.
-
-![](../../images/commit_details.PNG)
-
----
-
-## ¿Cómo hacer un commit?
-
-Para guardar los ficheros del área de `staging`, se utiliza el comando:
-
-```bash
-git commit   # Este comando creará una referencia al commit
-```
-
-Este comando abrirá el editor para que puedas poner un mensaje de commit. Si quieres añadir el mensaje directamente en el comando, puedes usar la opción `-m`:
-
-```bash
-git commit -m 'new feature'   # Realiza un commit con el mensaje 'new feature'
-```
-
----
-
-## Commit sin staging
-
-También es posible evitar añadir directamente los archivos modificados al área de `staging`. Para realizar esta operación se utiliza el comando:
-
-```bash
-git commit -a   # Realiza un commit de todos los archivos modificados sin necesidad de añadirlos a staging
-```
-
-Este comando realizará un commit directamente de los archivos modificados. Además, se puede añadir la opción `-m` para incluir el mensaje de commit directamente:
-
-```bash
-git commit -am 'new feature'   # Realiza un commit con el mensaje 'new feature' sin pasar por staging
-```
-
-<small>**Nota:** Esto sólo funciona para archivos modificados. Los archivos nuevos o eliminados necesitan ser añadidos a staging primero.</small>
-
----
-
-## HEAD
-
-Cada `commit` se graba con un hash único que puede ser complicado de utilizar como referencia rápida. Para esto existe `HEAD`, que normalmente apunta al último `commit` de la rama activa.
-
-```bash
-# Mostrar la rama a la que apunta HEAD
-git symbolic-ref HEAD
-
-# Mostrar el hash del commit al que apunta HEAD
-git rev-parse HEAD
-```
-
----
-
-## Deshacer Cambios (Commits)
-
-Si necesitamos deshacer el último `commit` porque nos hemos equivocado o faltan archivos, podemos hacerlo de dos maneras:
-
-```bash
-# Mantener los cambios
-git reset --soft HEAD~1
-
-# No mantener los cambios
-git reset --hard HEAD~1
-```
-
-El `HEAD~1` indica que queremos movernos a la versión inmediatamente anterior a la actual.
-
-**Nota:** Esto solo funcionará si los cambios no se han subido al repositorio remoto.
-
----
-
-## Arreglar Commit
-
-Si lo único que necesitamos es corregir el último `commit`:
-
-```bash
-# Editar el mensaje
-git commit --amend -m 'Nuevo mensaje'
-
-# Añadir archivos y modificar el commit
-git add archivo3.js
-git commit --amend -m 'Nuevo mensaje'
-```
-
-El comando `amend` no crea un nuevo `commit`, sino que actualiza el anterior.
