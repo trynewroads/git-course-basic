@@ -162,9 +162,19 @@ style: |
 
 ---
 
+## ¿Por qué necesitamos un control de versiones?
+
+<div class="container-image">
+  <img src=../../images/meme.jpg/> 
+</div>
+
+---
+
 ## ¿Qué es un control de versiones?
 
 **Version Control System o VCS** es una herramienta esencial en el desarrollo de software y la gestión de proyectos. Permite gestionar los cambios realizados en un archivo o conjunto de archivos a lo largo del tiempo, facilitando el seguimiento de modificaciones, la colaboración entre equipos y la recuperación de versiones anteriores.
+
+
 
 ---
 
@@ -212,7 +222,12 @@ style: |
 - **Preparado (staged):** El archivo está listo para ser confirmado.
 - **Confirmado (committed):** El archivo ha sido guardado en el historial del repositorio.
 
-![](../../images/git-states.png)
+
+----
+
+<div class=container-image>
+  <img src="../../images/git_area_diagram.png"/>
+</div>
 
 ---
 
@@ -221,6 +236,13 @@ style: |
 Una **rama** es una versión de la colección de directorios y archivos del repositorio. Cada vez que se crea una rama, se crea una **copia** de la colección de archivos actual.
 
 Se pueden crear **ramas a partir de otras ramas**. Los cambios realizados en esas ramas pueden ser **integrados en otras ramas**. Este proceso se conoce como **merge** (fusión).
+
+---
+
+
+<div class=container-image>
+  <img src="../../images/git_branching_merge.png"/>
+</div>
 
 ---
 
@@ -237,6 +259,7 @@ De esta forma, partiendo del mismo código, se generan diferentes **ramas**. Est
 La rama **master** ha sido tradicionalmente la rama principal de un repositorio, y suele ser creada automáticamente cuando se inicia un nuevo proyecto en Git. Aunque históricamente se ha utilizado el nombre **master** para esta rama, **no es obligatorio** que se llame de esta manera, ya que su elección responde a razones históricas y no tiene implicaciones técnicas.
 
 En la actualidad, muchos proyectos y plataformas, como GitHub, recomiendan cambiar el nombre de la rama principal a **main**. Esta recomendación busca evitar connotaciones negativas y racistas asociadas al término **master**, promoviendo un lenguaje más inclusivo.
+
 
 ---
 
@@ -261,6 +284,8 @@ Comprueba si _git_ está instalado, si está mostrará la versión:
 ```bash
 git --version
 ```
+
+---
 
 La instalación de Git varía según el sistema operativo:
 
@@ -315,6 +340,8 @@ La opción **core.autocrlf** controla cómo Git maneja los saltos de línea entr
 - `input`: No modifica los saltos de línea al hacer commit, pero convierte `CRLF` a `LF` al hacer `checkout`.
 - `false`: No realiza ninguna conversión.
 
+---
+
 Ejemplo de configuración:
 
 ```bash
@@ -332,6 +359,8 @@ Los alias permiten acortar y personalizar comandos largos de Git, haciendo que t
 - `co` para `checkout`
 - `br` para `branch`
 
+---
+
 Ejemplo de configuración de alias:
 
 ```bash
@@ -339,7 +368,6 @@ git config --global alias.st status  # `git st` en lugar de `git status`
 git config --global alias.co checkout  # `git co` en lugar de `git checkout`
 ```
 
-[Git Config](https://git-scm.com/docs/git-config)
 
 ---
 
@@ -350,6 +378,8 @@ Para revisar la configuración actual de Git, usa el comando:
 ```bash
 git config --list
 ```
+
+---
 
 Git tiene varios archivos de configuración:
 
