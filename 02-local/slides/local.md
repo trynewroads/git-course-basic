@@ -507,3 +507,76 @@ git clean -f   # Fuerza la limpieza
 </div>
 
 
+---
+
+## Ingorar Ficheros
+
+---
+
+## .gitignore
+
+No todos los archivos en nuestro directorio de trabajo deben ser controlados por git. A veces, existen archivos o directorios que no queremos incluir en el repositorio porque son de configuración, temporales, o no aportan valor al historial de cambios. Para que git los ignore, debemos especificarlos en el archivo .gitignore.
+
+---
+
+```
+# Ignorar carpeta de módulos
+node_modules
+# Ignorar fichero con variables de entorno
+.env
+# Ignorar fichero de sistema
+.DS_Store
+# Ignorar carpeta generada
+build/
+```
+
+---
+
+
+<div class=container-image>
+<img src="../../images/gitignore.png">
+</div>
+
+---
+
+##  Eliminar Ficheros
+
+---
+
+Para eliminar un fichero y registrar el cambio, podemos hacerlo de dos formas:
+
+```bash
+# Forma manual
+rm config.js # Elimina el fichero
+git add config.js # Marca el fichero como eliminado en staging
+git commit -m 'Remove config'
+# Usando git directamente
+git rm config.js # Elimina el fichero y lo marca para el commit
+git commit -m 'Remove config'
+```
+
+---
+
+<div class=container-image>
+<img src="../../images/git_delete.png">
+</div>
+
+---
+
+<div class=container-image>
+<img src="../../images/git_delete_2.png">
+</div>
+
+
+---
+
+Si queremos borrar el fichero del repositorio, pero conservarlo en el
+directorio local
+
+```bash
+git rm --cached <nombre-del-archivo>
+```
+
+<div class=container-image>
+<img src="../../images/git_delete_cache.png">
+</div>
