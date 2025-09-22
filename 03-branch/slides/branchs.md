@@ -508,3 +508,84 @@ git commit -m "C3"
 </div>
 
 ---
+
+## Personalizar mensajes de merge
+
+Puedes modificar el mensaje de un merge usando `--edit` y `--no-commit`:
+
+- **`--edit`**: Abre el editor para modificar el mensaje automático
+- **`--no-commit`**: Realiza el merge sin crear el commit automáticamente
+
+---
+
+## Comportamiento por tipo de merge
+
+**Fast-forward merge:**
+```bash
+git merge --edit feature          # ❌ No funciona (no hay commit de merge)
+git merge --no-commit feature     # ✅ Evita fast-forward, deja cambios en staging
+```
+---
+
+**No Fast-forward merge:**
+```bash
+git merge --edit --no-ff feature     # ✅ Abre editor para mensaje
+git merge --no-commit --no-ff feature # ✅ Prepara merge sin commitear
+```
+
+---
+
+**Squash merge:**
+```bash
+git merge --squash feature           # ✅ Siempre requiere commit manual
+git merge --squash --edit feature    # ✅ Redundante (ya controlas el mensaje)
+```
+
+---
+
+## Ejemplos prácticos
+
+
+- git merge --edit --no-ff feature
+
+<div class="container-image-col ">
+
+<div class="image-col">
+  <img src="../../images/git_merge_edit_no_ff.png" alt="Git Merge Squash Before" />
+</div>
+
+
+<div class="image-col">
+  <img src="../../images/git_merge_edit_no_ff_edit.png" alt="Git Merge Squash After" />
+</div>
+
+</div>
+
+
+
+---
+
+- git merge --no-commit --no-ff feature 
+
+
+
+
+<div class="container-image">
+  <img src="../../images/git_merge_no_commit.png" alt="Git Merge Squash Before" />
+</div>
+
+
+---
+
+- git merge --squash feature
+
+<div class="container-image">
+  <img src="../../images/git_merge_squash.png" alt="Git Merge Squash Before" />
+</div>
+
+---
+
+<div class="container-image">
+  <img src="../../images/git_merge_commit_logs.png" alt="Git Merge Squash Before" />
+</div>
+
