@@ -589,3 +589,87 @@ git merge --squash --edit feature    # ✅ Redundante (ya controlas el mensaje)
   <img src="../../images/git_merge_commit_logs.png" alt="Git Merge Squash Before" />
 </div>
 
+---
+
+# Conflictos de Merge
+
+---
+
+
+## ¿Qué es un conflicto?
+
+
+Un **conflicto** ocurre cuando Git no puede fusionar automáticamente los cambios porque:
+
+- Dos ramas modificaron las **mismas líneas** en el mismo archivo
+- Una rama modificó un archivo que otra rama eliminó
+- Ambas ramas crearon archivos con el **mismo nombre**
+
+Git necesita **tu ayuda** para decidir qué cambios mantener.
+
+---
+
+
+## ¿Cuándo ocurren los conflictos?
+
+**Escenarios comunes:**
+
+- Dos desarrolladores editan la misma función
+- Cambios en la misma línea de código
+- Modificaciones simultáneas en archivos de configuración
+- Refactorización que afecta las mismas secciones
+
+**Git puede fusionar automáticamente:**
+- Cambios en líneas diferentes del mismo archivo
+- Cambios en archivos diferentes
+- Adición de nuevas líneas sin solapamiento
+
+---
+
+
+## Identificar un conflicto
+
+Cuando ocurre un conflicto, Git te muestra:
+
+```bash
+$ git merge feature
+Auto-merging file.txt
+CONFLICT (content): Merge conflict in file.txt
+Automatic merge failed; fix conflicts and then commit the result.
+```
+
+**Verificar estado:**
+```bash
+git status
+# On branch main
+# You have unmerged paths.
+# Unmerged paths:
+#   both modified:   file.txt
+```
+
+---
+
+## Anatomía de un conflicto
+
+Git marca los conflictos en el archivo con marcadores especiales:
+
+```
+<<<<<<< HEAD
+Código de la rama actual (main)
+=======
+Código de la rama que se está fusionando (feature)
+>>>>>>> feature
+```
+---
+
+**Ejemplo real:**
+```javascript
+function saludar() {
+<<<<<<< HEAD
+    return "Hola Mundo";
+=======
+    return "Hello World";
+>>>>>>> feature
+}
+```
+
