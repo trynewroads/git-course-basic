@@ -673,3 +673,392 @@ function saludar() {
 }
 ```
 
+
+## Abortar un merge
+
+Si decidimos **no continuar** con el merge después de encontrar conflictos:
+
+```bash
+# Abortar el merge y volver al estado anterior
+git merge --abort
+```
+
+---
+
+## ¿Cuándo usar merge --abort?
+- Los conflictos son demasiado complejos
+- Te das cuenta de que no era el momento adecuado para el merge
+- Prefieres resolver los conflictos de otra manera
+- Necesitas consultar con el equipo antes de decidir
+
+**Resultado:**
+- Vuelve al estado anterior al merge
+- No se pierde ningún trabajo
+- Puedes intentar el merge más tarde
+
+
+---
+
+## Comandos útiles durante conflictos
+
+```bash
+# Ver estado actual del merge
+git status
+
+# Ver qué archivos tienen conflictos
+git diff --name-only --diff-filter=U
+
+# Abortar el merge completamente
+git merge --abort
+
+# Ver diferencias entre las versiones
+git diff HEAD..feature
+git diff HEAD..HEAD~1
+
+# Después de resolver conflictos
+git add archivo-resuelto.txt
+git commit  # Completa el merge
+```
+
+---
+
+## Resolver conflictos automáticamente
+
+Git ofrece estrategias para resolver conflictos automáticamente:
+
+**Opción `-X ours`**: Favorece cambios de la rama actual
+```bash
+git merge -X ours feature
+```
+
+**Opción `-X theirs`**: Favorece cambios de la rama que se fusiona
+```bash
+git merge -X theirs feature
+```
+
+---
+
+
+## Resolver conflictos durante el merge
+
+Si **ya estamos en medio de un conflicto**, puedes resolverlos automáticamente:
+
+```bash
+# Resolver TODOS los conflictos favoreciendo nuestra rama
+git checkout --ours .
+git add .
+git commit
+
+# Resolver TODOS los conflictos favoreciendo la otra rama
+git checkout --theirs .
+git add .
+git commit
+```
+
+---
+
+## Resolver por archivo específico
+
+```bash
+# Durante un conflicto activo:
+git status  # Ver archivos en conflicto
+
+# Elegir versión por archivo
+git checkout --ours archivo1.txt
+git checkout --theirs archivo2.txt
+
+# Completar el merge
+git add .
+git commit
+```
+
+---
+
+# Borrar Ramas
+
+---
+
+## ¿Por qué borrar ramas?
+
+
+**Ventajas de borrar ramas fusionadas:**
+- Mantener el repositorio limpio y organizado
+- Evitar confusión con ramas obsoletas
+- Reducir la lista de ramas al hacer `git branch`
+- Liberar espacio (aunque Git es eficiente)
+
+**¿Cuándo borrar?**
+- Después de fusionar exitosamente una feature
+- Cuando una rama experimental ya no es necesaria
+- Al finalizar un hotfix integrado
+
+---
+
+## Borrar ramas locales
+
+**Borrado seguro (solo ramas fusionadas):**
+```bash
+git branch -d feature-completada
+```
+
+**Borrado forzado (cualquier rama):**
+```bash
+git branch -D feature-experimental
+```
+
+---
+
+## Diferencias entre -d y -D
+
+**`git branch -d` (delete):**
+- Solo borra ramas **completamente fusionadas**
+- Git te protege de perder trabajo
+- Recomendado para uso normal
+
+**`git branch -D` (Delete forzado):**
+- Borra **cualquier rama** sin verificar
+- Útil para ramas experimentales o squash merge
+- ⚠️ **Cuidado**: Puedes perder trabajo no fusionado
+
+---
+
+
+## Ejemplos por tipo de merge
+
+**Después de Fast-forward o No Fast-forward:**
+```bash
+git merge feature-login
+git branch -d feature-login  # ✅ Funciona sin problemas
+```
+
+**Después de Squash merge:**
+```bash
+git merge --squash feature-payment
+git commit -m "Add payment system"
+git branch -d feature-payment  # ❌ Error: no está fusionada
+git branch -D feature-payment  # ✅ Funciona (forzado)
+```
+---
+
+<div class="container-image">
+  <img src="../../images/git_branch_delete.png" alt="Git Merge Squash Before" />
+</div>
+
+---
+
+## Borrar múltiples ramas
+
+```bash
+# Borrar varias ramas específicas
+git branch -d feature-1 feature-2 hotfix-bug
+
+# Borrar todas las ramas fusionadas (excepto main)
+git branch --merged | grep -v main | xargs git branch -d
+
+# Ver ramas no fusionadas antes de borrar
+git branch --no-merged
+```
+
+---
+
+## Recreando ramas borradas
+
+Si borraste una rama por error, puedes recuperarla:
+
+```bash
+# Encontrar el commit de la rama borrada
+git reflog
+
+# Recrear la rama desde el commit
+git branch rama-recuperada abc1234
+
+# O directamente hacer checkout
+git checkout -b rama-recuperada abc1234
+```
+
+**💡 Consejo:** Git mantiene los commits durante ~30 días por defecto
+
+---
+
+# Rebase
+
+---
+
+## ¿Qué es rebase?
+
+**Rebase** es una alternativa a merge que **reescribe el historial** para crear una línea de desarrollo más limpia y lineal.
+
+
+- **Reaplica commits** de una rama sobre otra
+- **Cambia la base** de donde se originó la rama
+- **Crea historial lineal** sin commits de merge
+- **Reescribe hashes** de los commits movidos
+
+
+
+---
+
+## [Rebase vs Merge](https://learngitbranching.js.org/?NODEMO&command=importTreeNow%20%7B%22branches%22%3A%7B%22main%22%3A%7B%22remoteTrackingBranchID%22%3Anull%2C%22remote%22%3Afalse%2C%22target%22%3A%22C9%22%2C%22id%22%3A%22main%22%2C%22type%22%3A%22branch%22%7D%2C%22feature%22%3A%7B%22remoteTrackingBranchID%22%3Anull%2C%22remote%22%3Afalse%2C%22target%22%3A%22C5%22%2C%22id%22%3A%22feature%22%2C%22type%22%3A%22branch%22%7D%7D%2C%22commits%22%3A%7B%22C0%22%3A%7B%22type%22%3A%22commit%22%2C%22parents%22%3A%5B%5D%2C%22author%22%3A%22Peter%20Cottle%22%2C%22createTime%22%3A%22Tue%20Sep%2023%202025%2011%3A18%3A32%20GMT+0200%20%28Central%20European%20Summer%20Time%29%22%2C%22commitMessage%22%3A%22Quick%20commit.%20Go%20Bears%21%22%2C%22id%22%3A%22C0%22%2C%22rootCommit%22%3Atrue%7D%2C%22C1%22%3A%7B%22type%22%3A%22commit%22%2C%22parents%22%3A%5B%22C0%22%5D%2C%22author%22%3A%22Peter%20Cottle%22%2C%22createTime%22%3A%22Tue%20Sep%2023%202025%2011%3A18%3A32%20GMT+0200%20%28Central%20European%20Summer%20Time%29%22%2C%22commitMessage%22%3A%22Quick%20commit.%20Go%20Bears%21%22%2C%22id%22%3A%22C1%22%7D%2C%22C2%22%3A%7B%22type%22%3A%22commit%22%2C%22parents%22%3A%5B%22C1%22%5D%2C%22author%22%3A%22Peter%20Cottle%22%2C%22createTime%22%3A%22Tue%20Sep%2023%202025%2011%3A18%3A32%20GMT+0200%20%28Central%20European%20Summer%20Time%29%22%2C%22commitMessage%22%3A%22Quick%20commit.%20Go%20Bears%21%22%2C%22id%22%3A%22C2%22%7D%2C%22C3%22%3A%7B%22type%22%3A%22commit%22%2C%22parents%22%3A%5B%22C2%22%5D%2C%22author%22%3A%22Peter%20Cottle%22%2C%22createTime%22%3A%22Tue%20Sep%2023%202025%2011%3A18%3A32%20GMT+0200%20%28Central%20European%20Summer%20Time%29%22%2C%22commitMessage%22%3A%22Quick%20commit.%20Go%20Bears%21%22%2C%22id%22%3A%22C3%22%7D%2C%22C4%22%3A%7B%22type%22%3A%22commit%22%2C%22parents%22%3A%5B%22C3%22%5D%2C%22author%22%3A%22Peter%20Cottle%22%2C%22createTime%22%3A%22Tue%20Sep%2023%202025%2011%3A18%3A32%20GMT+0200%20%28Central%20European%20Summer%20Time%29%22%2C%22commitMessage%22%3A%22Quick%20commit.%20Go%20Bears%21%22%2C%22id%22%3A%22C4%22%7D%2C%22C5%22%3A%7B%22type%22%3A%22commit%22%2C%22parents%22%3A%5B%22C4%22%5D%2C%22author%22%3A%22Peter%20Cottle%22%2C%22createTime%22%3A%22Tue%20Sep%2023%202025%2011%3A18%3A32%20GMT+0200%20%28Central%20European%20Summer%20Time%29%22%2C%22commitMessage%22%3A%22Quick%20commit.%20Go%20Bears%21%22%2C%22id%22%3A%22C5%22%7D%2C%22C6%22%3A%7B%22type%22%3A%22commit%22%2C%22parents%22%3A%5B%22C1%22%5D%2C%22author%22%3A%22Peter%20Cottle%22%2C%22createTime%22%3A%22Tue%20Sep%2023%202025%2011%3A18%3A32%20GMT+0200%20%28Central%20European%20Summer%20Time%29%22%2C%22commitMessage%22%3A%22Quick%20commit.%20Go%20Bears%21%22%2C%22id%22%3A%22C6%22%7D%2C%22C7%22%3A%7B%22type%22%3A%22commit%22%2C%22parents%22%3A%5B%22C6%22%5D%2C%22author%22%3A%22Peter%20Cottle%22%2C%22createTime%22%3A%22Tue%20Sep%2023%202025%2011%3A18%3A32%20GMT+0200%20%28Central%20European%20Summer%20Time%29%22%2C%22commitMessage%22%3A%22Quick%20commit.%20Go%20Bears%21%22%2C%22id%22%3A%22C7%22%7D%2C%22C8%22%3A%7B%22type%22%3A%22commit%22%2C%22parents%22%3A%5B%22C7%22%5D%2C%22author%22%3A%22Peter%20Cottle%22%2C%22createTime%22%3A%22Tue%20Sep%2023%202025%2011%3A18%3A32%20GMT+0200%20%28Central%20European%20Summer%20Time%29%22%2C%22commitMessage%22%3A%22Quick%20commit.%20Go%20Bears%21%22%2C%22id%22%3A%22C8%22%7D%2C%22C9%22%3A%7B%22type%22%3A%22commit%22%2C%22parents%22%3A%5B%22C8%22%5D%2C%22author%22%3A%22Peter%20Cottle%22%2C%22createTime%22%3A%22Tue%20Sep%2023%202025%2011%3A18%3A32%20GMT+0200%20%28Central%20European%20Summer%20Time%29%22%2C%22commitMessage%22%3A%22Quick%20commit.%20Go%20Bears%21%22%2C%22id%22%3A%22C9%22%7D%7D%2C%22tags%22%3A%7B%7D%2C%22HEAD%22%3A%7B%22target%22%3A%22main%22%2C%22id%22%3A%22HEAD%22%2C%22type%22%3A%22general%20ref%22%7D%7D)
+
+<div class="container-image-col">
+
+<div class="image-col">
+  <img src="../../images/git_merge_vs_rebase_1.png" alt="Git Merge Squash Before" />
+</div>
+
+<div class="image-col">
+  <img src="../../images/git_merge_vs_rebase_2.png" alt="Git Merge Squash Before" />
+</div>
+
+</div>
+
+
+---
+
+## Comando básico de rebase
+
+```bash
+# Cambiar a la rama que quieres rebasar
+git switch feature
+
+# Rebasar sobre main
+git rebase main
+```
+
+**Resultado**: Los commits de `feature` se reaplican sobre el último commit de `main`
+
+---
+
+## Ventajas
+- **Historial lineal y limpio** - fácil de seguir
+- **Sin commits de merge** - menos "ruido" en el log
+- **Fast-forward siempre posible** después del rebase
+- **Mejor para revisión** de código en PRs
+- **Commits agrupados** por feature
+
+---
+
+## Desventajas
+- **Reescribe historial** - puede causar problemas en colaboración
+- **Más complejo** de resolver conflictos
+- **Pierde contexto** de cuándo se hizo el merge
+
+
+
+---
+
+## Rebase interactivo
+
+El rebase interactivo te permite **modificar commits** durante el proceso:
+
+```bash
+# Rebase interactivo de los últimos 3 commits
+git rebase -i HEAD~3
+
+# Rebase interactivo sobre main
+git rebase -i main
+```
+
+---
+
+## Opciones del rebase interactivo
+
+```bash
+pick f7f3f6d F1: Add login form
+pick 310154e F2: Add validation  
+pick a5f4a0d F3: Fix typo
+
+# Cambiar 'pick' por:
+# pick   = usar commit tal como está
+# reword = cambiar mensaje del commit
+# edit   = pausar para editar el commit
+# squash = combinar con commit anterior
+# drop   = eliminar commit
+```
+
+---
+
+## Ejemplo de rebase interactivo
+
+**Antes:**
+```bash
+git log --oneline
+a5f4a0d F3: Fix typo
+310154e F2: Add validation
+f7f3f6d F1: Add login form
+c2e8f9a C2: Main work
+```
+---
+
+**Configuración del rebase:**
+```bash
+pick f7f3f6d F1: Add login form
+squash 310154e F2: Add validation
+drop a5f4a0d F3: Fix typo
+```
+
+
+**Resultado:**
+```bash
+git log --oneline
+b4d2c1e F1: Add login form with validation
+c2e8f9a C2: Main work
+```
+
+---
+
+## Conflictos durante rebase
+
+Si hay conflictos durante el rebase:
+
+```bash
+# Git pausará el rebase
+git status  # Ver archivos en conflicto
+
+# Resolver conflictos manualmente
+# Editar archivos...
+
+# Continuar el rebase
+git add archivo-resuelto.txt
+git rebase --continue
+
+# O abortar si es necesario
+git rebase --abort
+```
+
+---
+
+## Rebase vs Merge - ¿Cuándo usar cada uno?
+
+- Usar Rebase cuando
+    - Quieres historial lineal y limpio
+    - Trabajas en feature branches personales
+    - Antes de hacer merge a main
+    - Para limpiar commits antes de PR
+
+- Usar Merge cuando
+    - Trabajas en equipo en la misma rama
+    - Quieres preservar contexto temporal
+    - En ramas públicas/compartidas
+    - Para mantener trazabilidad de merges
+
+
+---
+
+## Comandos útiles para rebase
+
+```bash
+# Rebase simple
+git rebase main
+# Rebase interactivo
+git rebase -i HEAD~3
+# Continuar después de resolver conflictos
+git rebase --continue
+# Saltar commit problemático
+git rebase --skip
+# Abortar rebase
+git rebase --abort
+# Ver estado del rebase
+git status
+git log --oneline --graph
+```
