@@ -424,6 +424,8 @@ git status  # Ver archivos en conflicto
 >>>>>>> F2: Implement user login functionality
 ```
 
+Mover la funcion login dentro de la clase
+
 ---
 
 3. **Resolver el conflicto manteniendo la versión mejorada de main:**
@@ -434,14 +436,17 @@ git add user-manager.js
 git rebase --continue
 ```
 
-
-
 5. **Si aparecen más conflictos, repetir el proceso**
 
-
 ---
+
+## Ejercicio  3 y 4
+
+Editar los mensaje de la operacion `squash` y `reword`
+
 ## Ejercicio 5: Integrar con main
-### Fast-forward merge:
+
+**Fast-forward merge**
 ```bash
 git switch main
 git merge feature/user-authentication  # Debería ser fast-forward

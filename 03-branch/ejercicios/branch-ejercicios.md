@@ -218,8 +218,7 @@ git branch -a
 ```bash
 unzip git-rebase-complete-practice.zip
 cd git-rebase-complete-practice
-git switch feature/user-authentication
-git log --oneline
+
 ```
 
 
@@ -248,22 +247,31 @@ Limpiar el historial de commits usando todas las operaciones de rebase interacti
 
 ## Ejercicio 1: Realizar el rebase de main en feature
 
+```
+git branch
+git switch feature/user-authentication
+git log --oneline
+```
+
 ---
 
 
 ## Ejercicio 2: Resolver Conflictos Durante Rebase
 
-#### CONFLICTOS ESPERADOS
+**CONFLICTOS ESPERADOS**
+
 Durante el rebase aparecerán conflictos en `user-manager.js` porque:
-- **Main** modificó la función `validateEmail` 
+- **Main** modificó la función
 - **Feature** también tiene cambios en el mismo archivo
+
+> Tip: Mover la funcion login dentro de la clase
 
 ---
 
 
 ## Ejercicio 3: Operaciones Específicas
 
-### Squash - Combinar F2 y F3
+**Squash - Combinar F2 y F3**
 Cuando selecciones `squash` para F3, Git abrirá un editor para el mensaje:
 
 **Mensaje sugerido:**
@@ -307,4 +315,6 @@ ghi789d C3: Improve email validation and add initialization
 ---
 
 ## Ejercicio 5: Integrar con Main
+
+Llevar los cambios de la rama `feature/user-authentication` a `main` y limpiar el repositorio.
 
