@@ -772,3 +772,236 @@ Pasos para verificar la funcionalidad
 ```
 
 ---
+
+## FORK
+
+---
+
+### ¿Qué es un Fork?
+
+Un **Fork** es una copia independiente de un repositorio que se crea en tu cuenta de GitHub.
+
+**Características:**
+- **Copia completa** del repositorio original con todo su historial
+- **En tu cuenta** de GitHub, tienes control total
+- **Independiente** del repositorio original
+- **Mantiene conexión** para sincronizar cambios
+
+---
+
+### ¿Cuándo usar Fork?
+
+- **Contribuir a proyectos de terceros** donde no tienes permisos de escritura
+- **Experimentar** con código sin afectar el proyecto original  
+- **Crear tu propia versión** de un proyecto open source
+- **Aprender** estudiando el código de otros proyectos
+- **Colaborar** en proyectos donde no eres colaborador directo
+
+---
+
+### Fork vs Clone vs Branch
+
+| Acción | Fork | Clone | Branch |
+|--------|------|-------|--------|
+| **Ubicación** | GitHub → Tu GitHub | Remoto → Local | Local |
+| **Propósito** | Contribuir a terceros | Trabajar localmente | Features/experimentos |
+| **Permisos** | Tu propio repositorio | Solo lectura/escritura según permisos | Mismo repositorio |
+
+---
+
+## Flujo de Trabajo con Fork
+
+---
+
+### 1. Fork del repositorio original
+
+1. Ve al repositorio que quieres hacer fork
+2. Click en **"Fork"** (esquina superior derecha)
+3. Selecciona tu cuenta como destino
+4. GitHub crea la copia en tu cuenta
+
+---
+
+### 2. Clonar tu fork
+
+```bash
+git clone git@github.com:tu-usuario/repositorio.git
+cd repositorio
+```
+
+**Importante:** Clonas TU fork, no el repositorio original.
+
+---
+
+### 3. Agregar upstream
+
+```bash
+git remote add upstream git@github.com:usuario-original/repositorio.git
+```
+
+**Verificar remotos:**
+```bash
+git remote -v
+```
+
+**Resultado:**
+```
+origin    git@github.com:tu-usuario/repositorio.git (fetch)
+origin    git@github.com:tu-usuario/repositorio.git (push)
+upstream  git@github.com:usuario-original/repositorio.git (fetch)  
+upstream  git@github.com:usuario-original/repositorio.git (push)
+```
+
+---
+
+### 4. Mantener Fork Actualizado
+
+**Traer cambios del repositorio original:**
+```bash
+git fetch upstream
+git switch main
+git merge upstream/main
+git push origin main
+```
+
+**O usando pull directamente:**
+```bash
+git pull upstream main
+git push origin main
+```
+
+---
+
+### 5. Crear feature y hacer cambios
+
+```bash
+# Crear rama de feature
+git switch -c feature/nueva-funcionalidad
+
+# Hacer cambios y commits
+git add .
+git commit -m "feat: Agregar nueva funcionalidad"
+
+# Subir a TU fork
+git push -u origin feature/nueva-funcionalidad
+```
+
+---
+
+### 6. Crear Pull Request al original
+
+1. Ve a TU fork en GitHub
+2. GitHub detecta la nueva rama y sugiere PR
+3. **Importante:** Verificar que el PR va hacia el repositorio original
+4. Completar descripción del PR
+5. Enviar para revisión
+
+---
+
+## Sincronización Avanzada
+
+---
+
+### Resolver conflictos con upstream
+
+Si el repositorio original ha cambiado mientras trabajabas:
+
+```bash
+# Actualizar main desde upstream
+git fetch upstream
+git switch main  
+git merge upstream/main
+
+# Rebase tu feature sobre main actualizado
+git switch feature/nueva-funcionalidad
+git rebase main
+```
+
+---
+
+### Eliminar fork
+
+Si ya no necesitas el fork:
+
+1. Ve a tu fork en GitHub
+2. **Settings** → **General**
+3. Bajar hasta **"Danger Zone"**
+4. **"Delete this repository"**
+5. Escribir el nombre del repositorio para confirmar
+
+---
+
+## Buenas Prácticas con Fork
+
+---
+
+### Antes de hacer Fork
+
+- **Lee la documentación** del proyecto
+- **Revisa las guidelines** de contribución
+- **Busca issues** etiquetados como "good first issue"
+- **Verifica** que el proyecto esté activo
+
+---
+
+### Trabajando con Fork
+
+- **Mantén actualizado** tu fork regularmente
+- **Una rama por feature** o bugfix
+- **Commits pequeños** y descriptivos
+- **Prueba localmente** antes del PR
+- **Sigue las convenciones** del proyecto original
+
+---
+
+### Pull Requests desde Fork
+
+- **Título claro** describiendo el cambio
+- **Descripción detallada** con contexto
+- **Referencias** a issues relacionados
+- **Screenshots** si hay cambios visuales
+- **Tests** si el proyecto los requiere
+
+---
+
+## Diferencias Fork vs Colaborador
+
+---
+
+### Como Colaborador (con permisos)
+
+```bash
+# Clonar directamente el repositorio original
+git clone git@github.com:empresa/proyecto.git
+
+# Crear rama de feature
+git switch -c feature/nueva-funcionalidad
+
+# Push directo al repositorio original
+git push -u origin feature/nueva-funcionalidad
+```
+
+---
+
+### Como Contributor (via Fork)
+
+```bash
+# Clonar TU fork
+git clone git@github.com:tu-usuario/proyecto.git
+
+# Agregar upstream
+git remote add upstream git@github.com:empresa/proyecto.git
+
+# Push a tu fork, PR al original
+git push -u origin feature/nueva-funcionalidad
+```
+
+---
+
+### Ventajas del modelo Fork
+
+- **Seguridad**: Los mantenedores controlan qué se fusiona
+- **Calidad**: Todo código pasa por revisión
+- **Historial limpio**: Solo cambios aprobados llegan al main
+- **Escalabilidad**: Miles de contribuidores sin permisos directos
+- **Aprendizaje**: Los nuevos pueden practicar sin riesgo
