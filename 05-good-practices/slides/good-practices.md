@@ -163,6 +163,208 @@ style: |
 
 ---
 
+## Tags y Releases
+
+---
+
+### ¿Qué son los Tags?
+
+Los **tags** son etiquetas que marcan puntos específicos en el historial de Git, típicamente para versiones.
+
+**Características:**
+- **Inmutables**: Una vez creados, no cambian
+- **Referencias fijas**: Apuntan a un commit específico
+- **Versionado**: Marcan releases (v1.0, v2.1, etc.)
+- **Navegación**: Fácil acceso a versiones anteriores
+
+---
+
+### Tipos de Tags
+
+**Lightweight tags** (etiquetas ligeras):
+```bash
+git tag v1.0.0
+```
+
+**Annotated tags** (etiquetas anotadas):
+```bash
+git tag -a v1.0.0 -m "Release version 1.0.0"
+```
+
+**Diferencias:**
+- Lightweight: Solo un puntero al commit
+- Annotated: Incluye metadata (autor, fecha, mensaje)
+
+---
+
+### Crear Tags
+
+**Tag en el commit actual:**
+```bash
+git tag v1.0.0
+git tag -a v1.0.0 -m "First stable release"
+```
+
+**Tag en commit específico:**
+```bash
+git tag v0.9.0 abc1234
+git tag -a v0.9.0 abc1234 -m "Beta release"
+```
+
+**Ver información del tag:**
+```bash
+git show v1.0.0
+```
+
+---
+
+### Gestionar Tags
+
+**Listar tags:**
+```bash
+git tag                    # Todos los tags
+git tag -l "v1.*"         # Tags que coincidan con patrón
+git tag --sort=-version:refname  # Ordenados por versión
+```
+
+**Eliminar tags:**
+```bash
+git tag -d v1.0.0         # Local
+git push origin --delete tag v1.0.0  # Remoto
+```
+
+---
+
+### Subir Tags al Remoto
+
+**Un tag específico:**
+```bash
+git push origin v1.0.0
+```
+
+**Todos los tags:**
+```bash
+git push origin --tags
+```
+
+**Push con tags automáticamente:**
+```bash
+git push --follow-tags
+```
+
+---
+
+### Semantic Versioning (SemVer)
+
+**Formato:** `MAJOR.MINOR.PATCH`
+
+- **MAJOR** (1.x.x): Cambios incompatibles
+- **MINOR** (x.1.x): Nuevas funcionalidades compatibles  
+- **PATCH** (x.x.1): Correcciones de errores
+
+**Ejemplos:**
+```bash
+git tag v1.0.0    # Primera versión estable
+git tag v1.1.0    # Nueva funcionalidad
+git tag v1.1.1    # Corrección de bugs
+git tag v2.0.0    # Breaking changes
+```
+
+---
+
+### Checkout a Tags
+
+**Ver código de una versión específica:**
+```bash
+git switch --detach v1.0.0
+```
+
+**Crear rama desde tag:**
+```bash
+git switch -c hotfix-v1.0.0 v1.0.0
+```
+
+**Volver a la rama actual:**
+```bash
+git checkout main
+```
+
+---
+
+## Releases en GitHub
+
+---
+
+### ¿Qué son los Releases?
+
+Los **releases** en GitHub son versiones empaquetadas de tu software basadas en tags.
+
+**Incluyen:**
+- **Tag asociado**: Versión específica del código
+- **Notas de release**: Descripción de cambios
+- **Assets**: Archivos binarios, documentación
+- **Changelog**: Lista de cambios desde la versión anterior
+
+---
+
+### Crear Release en GitHub
+
+1. **Ir a la pestaña Releases** del repositorio
+2. **"Create a new release"**
+3. **Seleccionar tag** (o crear uno nuevo)
+4. **Título del release**: v1.0.0 - Primera versión estable
+5. **Descripción**: Cambios, mejoras, correcciones
+6. **Assets**: Subir archivos (opcional)
+7. **Publish release**
+
+---
+
+### Release Notes - Ejemplo
+
+```markdown
+# Release v1.2.0 - New Authentication System
+
+## 🚀 New Features
+- User authentication with JWT tokens
+- Password reset functionality
+
+## 🐛 Bug Fixes  
+- Fixed login form validation
+- Resolved memory leak in user sessions
+- Corrected timezone handling
+
+## 🔧 Technical Changes
+- Upgraded React to v18
+- Improved database performance
+
+## ⚠️ Breaking Changes
+- API endpoints now require authentication
+- Changed user object structure
+```
+
+---
+
+### Flujo completo de Release
+
+```bash
+# 1. Finalizar desarrollo
+git checkout main
+git pull origin main
+
+# 2. Crear tag anotado
+git tag -a v1.2.0 -m "Release version 1.2.0"
+
+# 3. Subir tag
+git push origin v1.2.0
+
+# 4. En GitHub: Crear release desde el tag
+# 5. Escribir release notes
+# 6. Publicar release
+```
+
+---
+
+
 ## Flujos de Trabajo en Git
 
 ---
@@ -445,6 +647,194 @@ git switch -c big-change
 <div class=container-image>
 <img src="../../images/ssa_flow.png"/>
 </div>
+
+---
+
+## Git Hooks
+
+---
+
+### ¿Qué son los Git Hooks?
+
+Scripts que se ejecutan automáticamente en ciertos eventos de Git:
+
+- **Pre-commit**: Antes de cada commit
+- **Pre-push**: Antes de cada push  
+- **Post-commit**: Después de cada commit
+- **Pre-receive**: En el servidor antes de recibir push
+
+**Ubicación:** `.git/hooks/`
+
+---
+
+### Tipos de Hooks
+
+**Hooks del lado cliente:**
+- `pre-commit`: Validar código antes del commit
+- `commit-msg`: Validar mensaje de commit
+- `pre-push`: Validar antes de hacer push
+- `post-commit`: Acciones después del commit
+
+**Hooks del lado servidor:**
+- `pre-receive`: Validar en servidor antes de recibir
+- `post-receive`: Acciones después de recibir push
+
+---
+
+### Pre-commit Hook - Ejemplo
+
+```bash
+#!/bin/sh
+# .git/hooks/pre-commit
+
+# Ejecutar linter
+npm run lint
+if [ $? -ne 0 ]; then
+  echo "❌ Linting failed"
+  exit 1
+fi
+
+# Ejecutar tests
+npm test
+if [ $? -ne 0 ]; then
+  echo "❌ Tests failed"
+  exit 1
+fi
+
+echo "✅ Pre-commit checks passed"
+```
+
+---
+
+### Commit-msg Hook - Ejemplo
+
+```bash
+#!/bin/sh
+# .git/hooks/commit-msg
+
+# Validar formato conventional commits
+commit_regex='^(feat|fix|docs|style|refactor|test|chore)(\(.+\))?: .{1,50}'
+
+if ! grep -qE "$commit_regex" "$1"; then
+    echo "❌ Invalid commit message format"
+    echo "Use: type(scope): description"
+    echo "Example: feat(auth): add login validation"
+    exit 1
+fi
+
+echo "✅ Commit message format is valid"
+```
+
+---
+
+### Herramientas para Hooks
+
+**Husky**: Simplifica la gestión de hooks
+
+```json
+{
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "pre-push": "npm test",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  }
+}
+```
+
+---
+
+### lint-staged
+
+Ejecuta linters solo en archivos staged (preparados para commit):
+
+```json
+{
+  "lint-staged": {
+    "*.js": ["eslint --fix", "prettier --write"],
+    "*.css": ["stylelint --fix"],
+    "*.md": ["markdownlint --fix"]
+  }
+}
+```
+
+**Ventaja:** Solo procesa archivos modificados, no todo el proyecto.
+
+---
+
+### Instalación y Configuración
+
+```bash
+# Instalar Husky
+npm install --save-dev husky
+
+# Activar hooks de Git
+npx husky install
+
+# Crear hook pre-commit
+npx husky add .husky/pre-commit "npm test"
+
+# Hook commit-msg
+npx husky add .husky/commit-msg "commitlint --edit $1"
+```
+
+---
+
+### Hooks en el Servidor
+
+**Pre-receive hook** para proteger ramas:
+
+```bash
+#!/bin/sh
+# .git/hooks/pre-receive
+
+while read oldrev newrev refname; do
+  if [ "$refname" = "refs/heads/main" ]; then
+    echo "❌ Push directo a main no permitido"
+    echo "Usa Pull Request para cambios"
+    exit 1
+  fi
+done
+
+echo "✅ Push permitido"
+```
+
+---
+
+### Buenas Prácticas con Hooks
+
+**Pre-commit:**
+- Linting y formato de código
+- Tests rápidos (unitarios)
+- Validación de sintaxis
+
+**Pre-push:**
+- Suite completa de tests
+- Build del proyecto
+- Análisis de seguridad
+
+**Commit-msg:**
+- Formato de mensajes
+- Referencias a issues
+- Longitud de mensajes
+
+---
+
+### Saltarse Hooks (Emergencias)
+
+```bash
+# Saltar pre-commit (emergencias únicamente)
+git commit --no-verify -m "hotfix: critical security patch"
+
+# Saltar pre-push
+git push --no-verify
+```
+
+**⚠️ Usar solo en emergencias reales**
+
+---
+
 
 ---
 
