@@ -694,13 +694,6 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
-# Ejecutar tests
-npm test
-if [ $? -ne 0 ]; then
-  echo "❌ Tests failed"
-  exit 1
-fi
-
 echo "✅ Pre-commit checks passed"
 ```
 
@@ -727,100 +720,6 @@ echo "✅ Commit message format is valid"
 
 ---
 
-### Herramientas para Hooks
-
-**Husky**: Simplifica la gestión de hooks
-
-```json
-{
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged",
-      "pre-push": "npm test",
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
-    }
-  }
-}
-```
-
----
-
-### lint-staged
-
-Ejecuta linters solo en archivos staged (preparados para commit):
-
-```json
-{
-  "lint-staged": {
-    "*.js": ["eslint --fix", "prettier --write"],
-    "*.css": ["stylelint --fix"],
-    "*.md": ["markdownlint --fix"]
-  }
-}
-```
-
-**Ventaja:** Solo procesa archivos modificados, no todo el proyecto.
-
----
-
-### Instalación y Configuración
-
-```bash
-# Instalar Husky
-npm install --save-dev husky
-
-# Activar hooks de Git
-npx husky install
-
-# Crear hook pre-commit
-npx husky add .husky/pre-commit "npm test"
-
-# Hook commit-msg
-npx husky add .husky/commit-msg "commitlint --edit $1"
-```
-
----
-
-### Hooks en el Servidor
-
-**Pre-receive hook** para proteger ramas:
-
-```bash
-#!/bin/sh
-# .git/hooks/pre-receive
-
-while read oldrev newrev refname; do
-  if [ "$refname" = "refs/heads/main" ]; then
-    echo "❌ Push directo a main no permitido"
-    echo "Usa Pull Request para cambios"
-    exit 1
-  fi
-done
-
-echo "✅ Push permitido"
-```
-
----
-
-### Buenas Prácticas con Hooks
-
-**Pre-commit:**
-- Linting y formato de código
-- Tests rápidos (unitarios)
-- Validación de sintaxis
-
-**Pre-push:**
-- Suite completa de tests
-- Build del proyecto
-- Análisis de seguridad
-
-**Commit-msg:**
-- Formato de mensajes
-- Referencias a issues
-- Longitud de mensajes
-
----
-
 ### Saltarse Hooks (Emergencias)
 
 ```bash
@@ -834,6 +733,141 @@ git push --no-verify
 **⚠️ Usar solo en emergencias reales**
 
 ---
+
+
+### El Problema de los Hooks Nativos
+
+Los hooks en `.git/hooks/` NO se sincronizan:
+
+- La carpeta `.git/` está en `.gitignore` por defecto  
+- Cada desarrollador debe instalar hooks manualmente  
+- No hay garantía de que el equipo use las mismas validaciones  
+- Los hooks pueden estar desactualizados o ausentes  
+
+**Resultado:** Inconsistencias en el equipo y código de mala calidad llegando al servidor.
+
+
+---
+
+## Soluciones al Problema
+
+---
+
+### Solución 1: CI/CD con GitHub Actions
+
+GitHub Actions es el sistema de **CI/CD nativo de GitHub** que permite ejecutar workflows automáticamente cuando ocurren eventos en el repositorio.
+
+**Eventos que activan Actions:**
+- Push a cualquier rama
+- Pull Request creado/actualizado
+- Release creado
+- Issues creados
+- Horarios programados (cron)
+
+---
+
+```yaml
+# .github/workflows/ci.yml
+name: CI Pipeline
+on: 
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+    
+jobs:
+  quality-check:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        
+    - name: Install dependencies
+      run: npm install
+      
+    - name: Run linter
+      run: npm run lint
+      
+    - name: Run tests
+      run: npm test
+```
+---
+### Validar mensajes de commit
+
+```yaml
+- name: Check commit messages
+  run: |
+    # Obtener commits del PR
+    git fetch origin main
+    COMMITS=$(git rev-list origin/main..HEAD)
+    
+    for commit in $COMMITS; do
+      msg=$(git log --format=%B -n 1 $commit)
+      if ! echo "$msg" | grep -qE "^(feat|fix|docs|style|refactor|test|chore)(\(.+\))?: .+"; then
+        echo "❌ Invalid commit: $commit"
+        echo "Message: $msg"
+        exit 1
+      fi
+    done
+    echo "✅ All commit messages are valid"
+```
+---
+
+### Solución 2: Herramientas como Husky
+
+Husky es una herramienta que permite gestionar Git Hooks de manera fácil y compartible entre el equipo.
+
+```bash
+# Instalar husky
+npm install --save-dev husky
+
+# Configurar husky
+npx husky init
+```
+---
+
+# Bibliografía y Recursos
+
+---
+
+## Libros y Documentación Oficial
+
+**Pro Git (Oficial)**  
+Libro oficial de Git, disponible de forma gratuita en múltiples idiomas.  
+https://git-scm.com/book/en/v2
+
+**Aprendiendo Git**  
+¡Domina y comprende Git de una vez por todas! Un recurso práctico y completo para entender y dominar Git.  
+https://leanpub.com/aprendiendo-git
+
+**Git Documentation**  
+Documentación oficial completa de todos los comandos de Git.  
+https://git-scm.com/docs
+
+---
+
+## Recursos Interactivos
+
+**Learn Git Branching**  
+Herramienta visual e interactiva para aprender Git y branching.  
+https://learngitbranching.js.org/
+
+---
+
+## Herramientas y Plataformas
+
+**GitHub**  
+Plataforma de desarrollo colaborativo basada en Git.  
+https://github.com/
+
+**GitLab**  
+Plataforma DevOps completa con control de versiones Git.  
+https://gitlab.com/
 
 
 ---
