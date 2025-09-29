@@ -1,0 +1,32 @@
+{
+  "goalTreeString": "{\"branches\":{\"main\":{\"target\":\"C5\",\"id\":\"main\",\"remoteTrackingBranchID\":null},\"feature-1\":{\"target\":\"C7\",\"id\":\"feature-1\",\"remoteTrackingBranchID\":null},\"feature-2\":{\"target\":\"C9\",\"id\":\"feature-2\",\"remoteTrackingBranchID\":null}},\"commits\":{\"C0\":{\"parents\":[],\"id\":\"C0\",\"rootCommit\":true},\"C1\":{\"parents\":[\"C0\"],\"id\":\"C1\"},\"C2\":{\"parents\":[\"C1\"],\"id\":\"C2\"},\"C3\":{\"parents\":[\"C1\"],\"id\":\"C3\"},\"C4\":{\"parents\":[\"C3\"],\"id\":\"C4\"},\"C5\":{\"parents\":[\"C3\"],\"id\":\"C5\"},\"C6\":{\"parents\":[\"C2\"],\"id\":\"C6\"},\"C7\":{\"parents\":[\"C6\"],\"id\":\"C7\"},\"C8\":{\"parents\":[\"C4\"],\"id\":\"C8\"},\"C9\":{\"parents\":[\"C8\"],\"id\":\"C9\"}},\"tags\":{},\"HEAD\":{\"target\":\"feature-2\",\"id\":\"HEAD\"}}",
+  "solutionCommand": "git switch -c feature-1;git commit;git switch main;git commit;git switch -c feature-2;git commit;git switch main;git commit;git switch feature-1;git commit;git commit;git switch feature-2;git commit;git commit",
+  "startTree": "{\"branches\":{\"main\":{\"target\":\"C1\",\"id\":\"main\",\"remoteTrackingBranchID\":null}},\"commits\":{\"C0\":{\"parents\":[],\"id\":\"C0\",\"rootCommit\":true},\"C1\":{\"parents\":[\"C0\"],\"id\":\"C1\"}},\"tags\":{},\"HEAD\":{\"target\":\"main\",\"id\":\"HEAD\"}}",
+  "hint": {
+    "en_US": "Seguir trabajando en feature-1 y feature-2"
+  },
+  "name": {
+    "en_US": "Trabajando con ramas"
+  },
+  "startDialog": {
+    "en_US": {
+      "childViews": [
+        {
+          "type": "ModalAlert",
+          "options": {
+            "markdowns": [
+              "Tu equipo está trabajando en un proyecto y necesitan manejar múltiples tareas simultáneamente.",
+              "",
+              "**Tareas a realizar:**",
+              "",
+              "1. **Nueva característica**: Te asignan desarrollar `feature-1` ",
+              "2. **Bug crítico**: Durante el desarrollo encuentras un error que necesita solución inmediata",
+              "3. **Desarrollo paralelo**: Un compañero debe crear `feature-2` al mismo tiempo",
+              "4. **Segundo bug**: Se reporta otro error en la aplicación principal mientras todos trabajan"
+            ]
+          }
+        }
+      ]
+    }
+  }
+}
